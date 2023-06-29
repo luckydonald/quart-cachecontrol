@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-    flask_cachecontrol.cache
+    quart_cachecontrol.cache
     ~~~~~~~~~~~~~~~~~~~~~~~~
 
     :copyright: (c) 2015 by Thomas Wiebe.
+    :copyright: (c) 2023 by Luckydonald.
     :license: BSD, see LICENSE for more details.
 """
 from datetime import timedelta
 from functools import wraps
 
-import flask
+import quart
 
 from .callback import SetCacheControlHeadersCallback, SetVaryHeaderCallback
 from .callback import SetCacheControlHeadersFromTimedeltaCallback, SetCacheControlHeadersForNoCachingCallback
@@ -36,8 +37,8 @@ def cache_for(only_if=ResponseIsSuccessful, vary=None, **timedelta_kw):
     def decorate_func(func):
         @wraps(func)
         def decorate_func_call(*a, **kw):
-            flask.after_this_request(cache_callback)
-            flask.after_this_request(vary_callback)
+            quart.after_this_request(cache_callback)
+            quart.after_this_request(vary_callback)
             return func(*a, **kw)
         return decorate_func_call
     return decorate_func
@@ -49,7 +50,7 @@ def cache(*cache_control_items, only_if=ResponseIsSuccessful, vary=None, **cache
 
     Expects keyword arguments and/or an item list.
 
-    Each pair is used to set Flask Response.cache_control attributes,
+    Each pair is used to set Quart Response.cache_control attributes,
     where the key is the attribute name and the value is its value.
 
     Use True as value for attributes without values.
@@ -71,8 +72,8 @@ def cache(*cache_control_items, only_if=ResponseIsSuccessful, vary=None, **cache
     def decorate_func(func):
         @wraps(func)
         def decorate_func_call(*a, **kw):
-            flask.after_this_request(cache_callback)
-            flask.after_this_request(vary_callback)
+            quart.after_this_request(cache_callback)
+            quart.after_this_request(vary_callback)
             return func(*a, **kw)
         return decorate_func_call
     return decorate_func
@@ -94,7 +95,7 @@ def dont_cache(only_if=ResponseIsSuccessful):
     def decorate_func(func):
         @wraps(func)
         def decorate_func_call(*a, **kw):
-            flask.after_this_request(cache_callback)
+            quart.after_this_request(cache_callback)
             return func(*a, **kw)
         return decorate_func_call
     return decorate_func

@@ -1,11 +1,11 @@
-# Flask-CacheControl
+# Quart-CacheControl
 
 ## Description
 
 A light-weight library to conveniently set `Cache-Control`
 headers on the response. Decorate view functions with
 `cache_for`, `cache`, or `dont_cache` decorators. Makes use of
-Flask `response.cache_control`.
+Quart `response.cache_control`.
 
 This extension does not provide any caching of its own. Its sole
 purpose is to set `Cache-Control` and related HTTP headers on the
@@ -14,7 +14,7 @@ in your jurisdiction which evaluate `Cache-Control` headers, such as
 Varnish Cache, do the caching for you.
 
 By default, `Cache-Control` headers are only appended in case of a
-successful response (status code 2xx). This behaviour can be controlled
+successful response (status code `2xx`). This behaviour can be controlled
 with the `only_if` argument to `cache_for` and `cache` decorators. Included
 options are `Always`, `ResponseIsSuccessful`, `ResponseIsSuccessfulOrRedirect`. Custom behaviour can be implemented by subclassing `OnlyIfEvaluatorBase`.
 
@@ -24,8 +24,8 @@ decorators, the `Vary` HTTP header is returned with the response.
 
 ## Example
 ```python
-from flask import Flask, render_template
-from flask_cachecontrol import (
+from quart import Quart, render_template
+from quart_cachecontrol import (
     cache,
     cache_for,
     dont_cache,
@@ -33,7 +33,7 @@ from flask_cachecontrol import (
     ResponseIsSuccessfulOrRedirect)
 
 
-app = Flask(__name__)
+app = Quart(__name__)
 
 
 @app.route('/')
@@ -58,12 +58,15 @@ def dashboard_view():
 ```
 
 ## Changelog
+### Quart adaption
+- ported to quart.
+
 ### 0.3.0
 - Add `only_if` evaluator for _successful or redirect (2xx, 3xx)_ responses (#7)
 - Support **Vary**-headers (#6)
 - Improve instantiation of callbacks and registry provider
 - **BREAKING**: Simplify instantiation and hooking into flask response handling (#8)
-  - No more need to instantiate `FlaskCacheControl` for Flask app.
+  - No more need to instantiate `QuartCacheControl` for Quart app.
 - **BREAKING**: Drop support for `only_if=None`
   - Use more explicit `only_if=Always` instead
 - **BREAKING**: Restructure modules

@@ -1,9 +1,9 @@
 import pytest
-from flask import Flask, Response
-from flask_cachecontrol import cache_for, cache, dont_cache, ResponseIsSuccessful, ResponseIsSuccessfulOrRedirect, \
+from quart import Quart, Response
+from quart_cachecontrol import cache_for, cache, dont_cache, ResponseIsSuccessful, ResponseIsSuccessfulOrRedirect, \
     Always
 
-app = Flask(__name__)
+app = Quart(__name__)
 
 CACHE_SECONDS = 300
 VARY_HEADERS = ['User-Agent', 'Referer']

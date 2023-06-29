@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-    flask_cachecontrol.callback
+    quart_cachecontrol.callback
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     :copyright: (c) 2015 by Thomas Wiebe.
+    :copyright: (c) 2023 by Luckydonald.
     :license: BSD, see LICENSE for more details.
 """
 
