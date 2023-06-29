@@ -38,22 +38,22 @@ app = Quart(__name__)
 
 @app.route('/')
 @cache_for(hours=3)
-def index_view():
+async def index_view():
     return render_template('index_template')
 
 @app.route('/users')
 @cache_for(minutes=5, only_if=ResponseIsSuccessfulOrRedirect)
-def users_view():
+async def users_view():
     return render_template('user_template')
 
 @app.route('/stats')
 @cache(max_age=3600, public=True, only_if=Always, vary=['User-Agent', 'Referer'])
-def stats_view():
+async def stats_view():
     return render_template('stats_template')
 
 @app.route('/dashboard')
 @dont_cache()
-def dashboard_view():
+async def dashboard_view():
     return render_template('dashboard_template')
 ```
 

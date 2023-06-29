@@ -8,6 +8,8 @@ with open('src/quart_cachecontrol/__init__.py', 'rb') as f:
     version = str(ast.literal_eval(_version_re.search(
         f.read().decode('utf-8')).group(1)))
 
+testing_dependencies = ['pytest', 'pytest-asyncio']
+
 setup(
     name='Quart-CacheControl',
     version=version,
@@ -26,8 +28,9 @@ setup(
     install_requires=[
         'Quart',
     ],
-    extras_require={'test': ["pytest"]},
-    python_requires='>=3.3',
+    extras_require={'test': testing_dependencies},
+    test_requires=testing_dependencies,
+    python_requires='>=3.4',
     classifiers=[
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
