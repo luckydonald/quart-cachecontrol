@@ -189,7 +189,7 @@ class TestDontCacheAlways(unittest.IsolatedAsyncioTestCase):
         self.assertIn('Cache-Control' in rv.headers and 'no-cache', rv.headers['Cache-Control'], "'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']")
 
 
-class TestDontCacheOnlyOnSuccess:
+class TestDontCacheOnlyOnSuccess(unittest.IsolatedAsyncioTestCase):
     @pytest.mark.asyncio
     async def test_success(self):
         async with app.test_client() as client:
@@ -209,7 +209,7 @@ class TestDontCacheOnlyOnSuccess:
         self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
 
-class TestDontCacheOnlyOnSuccessOrRedirect:
+class TestDontCacheOnlyOnSuccessOrRedirect(unittest.IsolatedAsyncioTestCase):
     @pytest.mark.asyncio
     async def test_success(self):
         async with app.test_client() as client:
@@ -229,7 +229,7 @@ class TestDontCacheOnlyOnSuccessOrRedirect:
         self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
 
-class TestCacheAlways:
+class TestCacheAlways(unittest.IsolatedAsyncioTestCase):
     @pytest.mark.asyncio
     async def test_success(self):
         async with app.test_client() as client:
@@ -255,7 +255,7 @@ class TestCacheAlways:
         self.assertIn('no-cache', rv.headers['Cache-Control'], "'no-cache' not in rv.headers['Cache-Control']")
 
 
-class TestCacheOnlyOnSuccess:
+class TestCacheOnlyOnSuccess(unittest.IsolatedAsyncioTestCase):
     @pytest.mark.asyncio
     async def test_success(self):
         async with app.test_client() as client:
@@ -277,7 +277,7 @@ class TestCacheOnlyOnSuccess:
         self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
 
-class TestCacheOnlyOnSuccessOrRedirect:
+class TestCacheOnlyOnSuccessOrRedirect(unittest.IsolatedAsyncioTestCase):
     @pytest.mark.asyncio
     async def test_success(self):
         async with app.test_client() as client:
@@ -301,7 +301,7 @@ class TestCacheOnlyOnSuccessOrRedirect:
         self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
 
-class TestCacheVary:
+class TestCacheVary(unittest.IsolatedAsyncioTestCase):
     @pytest.mark.asyncio
     async def test_success_wo_vary(self):
         async with app.test_client() as client:
