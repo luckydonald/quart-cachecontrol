@@ -36,10 +36,10 @@ def cache_for(only_if=ResponseIsSuccessful, vary=None, **timedelta_kw):
 
     def decorate_func(func):
         @wraps(func)
-        def decorate_func_call(*a, **kw):
+        async def decorate_func_call(*a, **kw):
             quart.after_this_request(cache_callback)
             quart.after_this_request(vary_callback)
-            return func(*a, **kw)
+            return await quart.current_app.ensure_async(func)(*a, **kw)
         return decorate_func_call
     return decorate_func
 
@@ -71,10 +71,10 @@ def cache(*cache_control_items, only_if=ResponseIsSuccessful, vary=None, **cache
 
     def decorate_func(func):
         @wraps(func)
-        def decorate_func_call(*a, **kw):
+        async def decorate_func_call(*a, **kw):
             quart.after_this_request(cache_callback)
             quart.after_this_request(vary_callback)
-            return func(*a, **kw)
+            return await quart.current_app.ensure_async(func)(*a, **kw)
         return decorate_func_call
     return decorate_func
 
@@ -94,8 +94,8 @@ def dont_cache(only_if=ResponseIsSuccessful):
 
     def decorate_func(func):
         @wraps(func)
-        def decorate_func_call(*a, **kw):
+        async def decorate_func_call(*a, **kw):
             quart.after_this_request(cache_callback)
-            return func(*a, **kw)
+            return await quart.current_app.ensure_async(func)(*a, **kw)
         return decorate_func_call
     return decorate_func
