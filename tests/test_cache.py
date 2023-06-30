@@ -85,16 +85,16 @@ class TestCacheForAlways(unittest.IsolatedAsyncioTestCase):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/always/200')
         # end with
-        assert 'Cache-Control' in rv.headers and rv.headers['Cache-Control'] == f'max-age={CACHE_SECONDS}'
-        assert 'Expires' in rv.headers
+        self.assertEqual(f'max-age={CACHE_SECONDS}', 'Cache-Control' in rv.headers and rv.headers['Cache-Control'], "f'max-age={CACHE_SECONDS}' == 'Cache-Control' in rv.headers and rv.headers['Cache-Control']")
+        self.assertIn('Expires', rv.headers, "'Expires' in rv.headers")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/always/404')
         # end with
-        assert 'Cache-Control' in rv.headers and rv.headers['Cache-Control'] == f'max-age={CACHE_SECONDS}'
-        assert 'Expires' in rv.headers
+        self.assertEqual(f'max-age={CACHE_SECONDS}', 'Cache-Control' in rv.headers and rv.headers['Cache-Control'], "f'max-age={CACHE_SECONDS}' == 'Cache-Control' in rv.headers and rv.headers['Cache-Control']")
+        self.assertIn('Expires', rv.headers, "'Expires' in rv.headers")
 
 
 class TestCacheForOnlyOnSuccess(unittest.IsolatedAsyncioTestCase):
@@ -102,19 +102,19 @@ class TestCacheForOnlyOnSuccess(unittest.IsolatedAsyncioTestCase):
     async def test_success(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/on_success/200')
-        assert 'Cache-Control' in rv.headers
+        self.assertIn('Cache-Control', rv.headers, "'Cache-Control' in rv.headers")
 
     @pytest.mark.asyncio
     async def test_redirect(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/on_success/300')
-        assert 'Cache-Control' not in rv.headers
+        self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/on_success/404')
-        assert 'Cache-Control' not in rv.headers
+        self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
 
 class TestCacheForOnlyOnSuccessOrRedirect(unittest.IsolatedAsyncioTestCase):
@@ -122,19 +122,19 @@ class TestCacheForOnlyOnSuccessOrRedirect(unittest.IsolatedAsyncioTestCase):
     async def test_success(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/on_success_or_redirect/200')
-        assert 'Cache-Control' in rv.headers
+        self.assertIn('Cache-Control', rv.headers, "'Cache-Control' in rv.headers")
 
     @pytest.mark.asyncio
     async def test_redirect(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/on_success_or_redirect/300')
-        assert 'Cache-Control' in rv.headers
+        self.assertIn('Cache-Control', rv.headers, "'Cache-Control' in rv.headers")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/on_success_or_redirect/404')
-        assert 'Cache-Control' not in rv.headers
+        self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
 
 class TestCacheForVary(unittest.IsolatedAsyncioTestCase):
@@ -142,31 +142,31 @@ class TestCacheForVary(unittest.IsolatedAsyncioTestCase):
     async def test_success_wo_vary(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/on_success/200')
-        assert 'Vary' not in rv.headers
+        self.assertNotIn('Vary', rv.headers, "'Vary' not in rv.headers")
 
     @pytest.mark.asyncio
     async def test_success(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/vary/200')
-        assert rv.headers.get('Vary') == VARY_HEADERS_STR
+        self.assertEqual(VARY_HEADERS_STR, rv.headers.get('Vary'), "VARY_HEADERS_STR == rv.headers.get('Vary')")
 
     @pytest.mark.asyncio
     async def test_redirect(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/vary/300')
-        assert rv.headers.get('Vary') == VARY_HEADERS_STR
+        self.assertEqual(VARY_HEADERS_STR, rv.headers.get('Vary'), "VARY_HEADERS_STR == rv.headers.get('Vary')")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/vary/404')
-        assert rv.headers.get('Vary') == VARY_HEADERS_STR
+        self.assertEqual(VARY_HEADERS_STR, rv.headers.get('Vary'), "VARY_HEADERS_STR == rv.headers.get('Vary')")
 
     @pytest.mark.asyncio
     async def test_server_error(self):
         async with app.test_client() as client:
             rv = await client.get('/cache_for/vary/500')
-        assert rv.headers.get('Vary') == VARY_HEADERS_STR
+        self.assertEqual(VARY_HEADERS_STR, rv.headers.get('Vary'), "VARY_HEADERS_STR == rv.headers.get('Vary')")
 
 
 class TestDontCacheAlways(unittest.IsolatedAsyncioTestCase):
@@ -174,19 +174,19 @@ class TestDontCacheAlways(unittest.IsolatedAsyncioTestCase):
     async def test_success(self):
         async with app.test_client() as client:
             rv = await client.get('/dont_cache/always/200')
-        assert 'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control' in rv.headers and 'no-cache', rv.headers['Cache-Control'], "'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']")
 
     @pytest.mark.asyncio
     async def test_redirect(self):
         async with app.test_client() as client:
             rv = await client.get('/dont_cache/always/300')
-        assert 'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control' in rv.headers and 'no-cache', rv.headers['Cache-Control'], "'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/dont_cache/always/404')
-        assert 'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control' in rv.headers and 'no-cache', rv.headers['Cache-Control'], "'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']")
 
 
 class TestDontCacheOnlyOnSuccess:
@@ -194,19 +194,19 @@ class TestDontCacheOnlyOnSuccess:
     async def test_success(self):
         async with app.test_client() as client:
             rv = await client.get('/dont_cache/on_success/200')
-        assert 'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control' in rv.headers and 'no-cache', rv.headers['Cache-Control'], "'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']")
 
     @pytest.mark.asyncio
     async def test_redirect(self):
         async with app.test_client() as client:
             rv = await client.get('/dont_cache/on_success/300')
-        assert 'Cache-Control' not in rv.headers
+        self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/dont_cache/on_success/404')
-        assert 'Cache-Control' not in rv.headers
+        self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
 
 class TestDontCacheOnlyOnSuccessOrRedirect:
@@ -214,19 +214,19 @@ class TestDontCacheOnlyOnSuccessOrRedirect:
     async def test_success(self):
         async with app.test_client() as client:
             rv = await client.get('/dont_cache/on_success_or_redirect/200')
-        assert 'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control' in rv.headers and 'no-cache', rv.headers['Cache-Control'], "'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']")
 
     @pytest.mark.asyncio
     async def test_redirect(self):
         async with app.test_client() as client:
             rv = await client.get('/dont_cache/on_success_or_redirect/300')
-        assert 'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control' in rv.headers and 'no-cache', rv.headers['Cache-Control'], "'Cache-Control' in rv.headers and 'no-cache' in rv.headers['Cache-Control']")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/dont_cache/on_success_or_redirect/404')
-        assert 'Cache-Control' not in rv.headers
+        self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
 
 class TestCacheAlways:
@@ -234,25 +234,25 @@ class TestCacheAlways:
     async def test_success(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/always/200')
-        assert 'Cache-Control' in rv.headers \
-               and 'no-store' in rv.headers['Cache-Control'] \
-               and 'no-cache' not in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control', rv.headers, "'Cache-Control' in rv.headers")
+        self.assertIn('no-store', rv.headers['Cache-Control'], "'no-store' in rv.headers['Cache-Control']")
+        self.assertIn('no-cache', rv.headers['Cache-Control'], "'no-cache' not in rv.headers['Cache-Control']")
 
     @pytest.mark.asyncio
     async def test_redirect(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/always/300')
-        assert 'Cache-Control' in rv.headers \
-               and 'no-store' in rv.headers['Cache-Control'] \
-               and 'no-cache' not in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control', rv.headers, "'Cache-Control' in rv.headers")
+        self.assertIn('no-store', rv.headers['Cache-Control'], "'no-store' in rv.headers['Cache-Control']")
+        self.assertIn('no-cache', rv.headers['Cache-Control'], "'no-cache' not in rv.headers['Cache-Control']")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/always/404')
-        assert 'Cache-Control' in rv.headers \
-               and 'no-store' in rv.headers['Cache-Control'] \
-               and 'no-cache' not in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control', rv.headers, "'Cache-Control' in rv.headers")
+        self.assertIn('no-store', rv.headers['Cache-Control'], "'no-store' in rv.headers['Cache-Control']")
+        self.assertIn('no-cache', rv.headers['Cache-Control'], "'no-cache' not in rv.headers['Cache-Control']")
 
 
 class TestCacheOnlyOnSuccess:
@@ -260,21 +260,21 @@ class TestCacheOnlyOnSuccess:
     async def test_success(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/on_success/200')
-        assert 'Cache-Control' in rv.headers \
-               and 'no-store' in rv.headers['Cache-Control'] \
-               and 'no-cache' not in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control', rv.headers, "'Cache-Control' in rv.headers")
+        self.assertIn('no-store', rv.headers['Cache-Control'], "'no-store' in rv.headers['Cache-Control']")
+        self.assertIn('no-cache', rv.headers['Cache-Control'], "'no-cache' not in rv.headers['Cache-Control']")
 
     @pytest.mark.asyncio
     async def test_redirect(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/on_success/300')
-        assert 'Cache-Control' not in rv.headers
+        self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/on_success/404')
-        assert 'Cache-Control' not in rv.headers
+        self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
 
 class TestCacheOnlyOnSuccessOrRedirect:
@@ -282,23 +282,23 @@ class TestCacheOnlyOnSuccessOrRedirect:
     async def test_success(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/on_success_or_redirect/200')
-        assert 'Cache-Control' in rv.headers \
-               and 'no-store' in rv.headers['Cache-Control'] \
-               and 'no-cache' not in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control', rv.headers, "'Cache-Control' in rv.headers")
+        self.assertIn('no-store', rv.headers['Cache-Control'], "'no-store' in rv.headers['Cache-Control']")
+        self.assertIn('no-cache', rv.headers['Cache-Control'], "'no-cache' not in rv.headers['Cache-Control']")
 
     @pytest.mark.asyncio
     async def test_redirect(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/on_success_or_redirect/300')
-        assert 'Cache-Control' in rv.headers \
-               and 'no-store' in rv.headers['Cache-Control'] \
-               and 'no-cache' not in rv.headers['Cache-Control']
+        self.assertIn('Cache-Control', rv.headers , "'Cache-Control' in rv.headers")
+        self.assertIn('no-store', rv.headers['Cache-Control'], "'no-store' in rv.headers['Cache-Control']")
+        self.assertIn('no-cache', rv.headers['Cache-Control'], "'no-cache' not in rv.headers['Cache-Control']")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/on_success_or_redirect/404')
-        assert 'Cache-Control' not in rv.headers
+        self.assertNotIn('Cache-Control', rv.headers, "'Cache-Control' not in rv.headers")
 
 
 class TestCacheVary:
@@ -306,28 +306,28 @@ class TestCacheVary:
     async def test_success_wo_vary(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/on_success/200')
-        assert 'Vary' not in rv.headers
+        self.assertNotIn('Vary', rv.headers, "'Vary' not in rv.headers")
 
     @pytest.mark.asyncio
     async def test_success(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/vary/200')
-        assert rv.headers.get('Vary') == VARY_HEADERS_STR
+        self.assertEqual(VARY_HEADERS_STR, rv.headers.get('Vary'), "VARY_HEADERS_STR == rv.headers.get('Vary')")
 
     @pytest.mark.asyncio
     async def test_redirect(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/vary/300')
-        assert rv.headers.get('Vary') == VARY_HEADERS_STR
+        self.assertEqual(VARY_HEADERS_STR, rv.headers.get('Vary'), "VARY_HEADERS_STR == rv.headers.get('Vary')")
 
     @pytest.mark.asyncio
     async def test_client_error(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/vary/404')
-        assert rv.headers.get('Vary') == VARY_HEADERS_STR
+        self.assertEqual(VARY_HEADERS_STR, rv.headers.get('Vary'), "VARY_HEADERS_STR == rv.headers.get('Vary')")
 
     @pytest.mark.asyncio
     async def test_server_error(self):
         async with app.test_client() as client:
             rv = await client.get('/cache/vary/500')
-        assert rv.headers.get('Vary') == VARY_HEADERS_STR
+        self.assertEqual(VARY_HEADERS_STR, rv.headers.get('Vary'), "VARY_HEADERS_STR == rv.headers.get('Vary')")
